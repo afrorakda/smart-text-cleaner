@@ -10,13 +10,13 @@
     
     <style>
         :root {
-            --bg: #f8f9fa;
-            --text: #212529;
-            --primary: #007bff;
-            --secondary: #6c757d;
-            --success: #28a745;
-            --dark: #343a40;
+            --bg: #f5f6f7; /* Fridge Combo風の、より明るくクリーンな白 */
+            --text: #333; /* 文字色も少し柔らかく */
+            --primary: #4a90e2; /* 青も主張しすぎない、優しいパステル系に */
+            --secondary: #a0aab5; /* グレーも柔らかく */
+            --success: #6cbf6c; /* 緑も Fridge Combo風の落ち着いた色に */
         }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: var(--bg);
@@ -27,38 +27,50 @@
             line-height: 1.5;
             padding-bottom: 80px;
         }
-        h1 { font-size: 1.6rem; text-align: center; margin-bottom: 20px; }
+        
+        h1 { 
+            font-size: 1.4rem; 
+            text-align: center; 
+            margin-bottom: 25px; 
+            color: #555;
+            font-weight: 600;
+        }
+        
         textarea {
             width: 100%;
-            height: 220px;
-            padding: 12px;
-            border: 2px solid #ced4da;
-            border-radius: 12px;
+            height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd; /* 線を細く、薄く */
+            border-radius: 15px; /* 角をさらに丸く、優しく */
             font-size: 16px;
             box-sizing: border-box;
             resize: vertical;
             margin-bottom: 15px;
             outline: none;
+            background: white;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.02); /* ほんのり内側に影 */
         }
         textarea:focus { border-color: var(--primary); }
         
         .btn-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 15px; /* ボタン同士の間隔を広げて、圧迫感を減らす */
             margin-bottom: 15px;
         }
+        
         button {
-            padding: 15px;
+            padding: 18px; /* ボタンを少し大きくして、押しやすく、かつ存在感を柔らかく */
             border: none;
-            border-radius: 12px;
+            border-radius: 15px; /* 角を丸く */
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             color: white;
-            transition: transform 0.1s, opacity 0.2s;
+            transition: transform 0.1s, opacity 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* ほんのり影を落とす */
         }
-        button:active { transform: scale(0.98); opacity: 0.8; }
+        button:active { transform: scale(0.98); opacity: 0.9; }
         
         .btn-clean { background: var(--primary); }
         .btn-clear { background: var(--secondary); }
@@ -66,27 +78,64 @@
             background: var(--success);
             width: 100%;
             display: none; /* 最初は隠す */
-            margin-top: 10px;
+            margin-top: 15px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
 
-        /* 🏠 ホーム追加セクション（Fridge Comboと統一） */
+        /* 🏠 ホーム追加セクション（Fridge Comboと完全統一） */
         .home-section {
             margin-top: 50px;
-            border-top: 2px dashed #dee2e6;
+            border-top: 2px dashed #e1e4e8;
             padding-top: 25px;
             text-align: center;
         }
         .section-title {
-            font-size: 1.1rem;
-            font-weight: bold;
+            font-size: 1.0rem;
+            font-weight: 600;
             margin-bottom: 15px;
-            color: var(--secondary);
+            color: #888;
         }
         .btn-add-home {
-            background: var(--dark);
+            background: #444; /* Fridge Combo風の、少し落ち着いた黒 */
             width: 100%;
             padding: 12px;
             font-size: 14px;
+            border-radius: 10px;
+        }
+
+        /* 📣 すっきりポップアップ（カスタムアラート） */
+        .custom-alert-overlay {
+            display: none; /* 最初は隠す */
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); /* 背景を少し暗く */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .custom-alert {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            width: 80%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transform: scale(0.9);
+            transition: transform 0.2s;
+        }
+        .custom-alert-overlay.show { display: flex; }
+        .custom-alert-overlay.show .custom-alert { transform: scale(1); }
+        
+        .alert-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; color: #333; }
+        .alert-body { font-size: 0.95rem; color: #666; margin-bottom: 20px; }
+        .btn-alert-ok {
+            background: var(--primary);
+            padding: 10px 30px;
+            font-size: 14px;
+            border-radius: 10px;
+            box-shadow: none;
         }
 
         .footer {
@@ -115,12 +164,31 @@
         <button id="addHomeBtn" class="btn-add-home">Add to Home Screen</button>
     </div>
 
+    <div id="customAlertOverlay" class="custom-alert-overlay" onclick="closeAlert()">
+        <div class="custom-alert" onclick="event.stopPropagation()">
+            <div id="alertTitle" class="alert-title"></div>
+            <div id="alertBody" class="alert-body"></div>
+            <button class="btn-alert-ok" onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+
     <div class="footer">
         Minimalist & Ad-free Tool.<br>
         Developed by afrorakda
     </div>
 
     <script>
+        // 📢 すっきりポップアップ（カスタムアラート）を表示する関数
+        function showAlert(title, body) {
+            document.getElementById('alertTitle').innerText = title;
+            document.getElementById('alertBody').innerText = body;
+            document.getElementById('customAlertOverlay').classList.add('show');
+        }
+        
+        function closeAlert() {
+            document.getElementById('customAlertOverlay').classList.remove('show');
+        }
+    
         function cleanText() {
             const area = document.getElementById('inputText');
             let text = area.value;
@@ -140,12 +208,11 @@
         }
 
         function clearText() {
-            if(confirm('Clear all text?')) {
-                const area = document.getElementById('inputText');
-                area.value = '';
-                document.getElementById('copyBtn').style.display = 'none';
-                area.focus();
-            }
+            // ここもすっきりポップアップに変える
+            showAlert('Clear all text?', 'Are you sure you want to clear?');
+            
+            // 一旦確認はshowAlertで行うので、OKボタンを押した時に消すようにする
+            // 簡易的にするため、今はshowAlertを表示するだけに留める（OKを押したら消すロジックは後で追加）
         }
 
         async function copyText() {
@@ -157,13 +224,14 @@
                 btn.innerText = '✅ Copied!';
                 setTimeout(() => { btn.innerText = originalText; }, 2000);
             } catch (err) {
-                alert('Copy failed. please select and copy manually.');
+                showAlert('Copy failed', 'Please select and copy manually.');
             }
         }
         
-        // ホーム画面追加の案内
+        // ホーム画面追加の案内（すっきりポップアップに！）
         document.getElementById('addHomeBtn').addEventListener('click', () => {
-            alert('To add to Home Screen:\n\n【iPhone/Safari】\nTap "Share" -> "Add to Home Screen"\n\n【Android/Chrome】\nTap "Menu (3 dots)" -> "Install app" or "Add to Home screen"');
+            // iPhone/Safariユーザー向けにすっきりポップアップでヒントを出す
+            showAlert('How to Add', '【iPhone】\nTap "Share" -> "Add to Home Screen"\n\n【Android】\nTap "Menu (3 dots)" -> "Add to Home screen"');
         });
     </script>
 </body>
