@@ -1,138 +1,308 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Smart Text Cleaner</title>
+    <link rel="icon" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
-    <link rel="icon" href="icon.png" type="image/png">
+    
     <style>
         :root {
-            --bg: #f8f9fa;
-            --text: #333;
-            --primary: #4a90e2;
-            --secondary: #a0aab5;
-            --success: #6cbf6c;
+            --primary-bg: #fdf6f0; /* 優しいパステルベージュ */
+            --accent-color: #ffb7b2; /* 優しいピンク */
+            --text-color: #5d5d5d;
+            --card-bg: #ffffff;
+            --border-radius: 18px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            max-width: 600px;
-            margin: 0 auto;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
             padding: 20px;
-            padding-bottom: 80px;
         }
-        h1 { font-size: 1.4rem; text-align: center; margin-bottom: 20px; color: #555; }
-        textarea {
-            width: 100%; height: 220px; padding: 15px;
-            border: 1px solid #ddd; border-radius: 15px;
-            font-size: 16px; box-sizing: border-box; resize: vertical;
-            margin-bottom: 15px; outline: none; background: white;
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        h1 {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        h1 img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* テキストエリア */
+        #inputArea {
+            width: 100%;
+            height: 250px;
+            padding: 15px;
+            border: none;
+            border-radius: var(--border-radius);
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            font-size: 16px;
+            resize: none;
+            outline: none;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        /* ボタンエリア */
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
         button {
-            padding: 16px; border: none; border-radius: 15px;
-            font-size: 16px; font-weight: 600; cursor: pointer;
-            color: white; transition: opacity 0.2s;
-        }
-        .btn-clean { background: var(--primary); }
-        .btn-clear { background: var(--secondary); }
-        .btn-copy { background: var(--success); width: 100%; display: none; margin-top: 15px; }
-
-        /* 🏠 Fridge Combo 統一デザイン：設定ボタンエリア */
-        .settings-area {
-            margin-top: 50px; border-top: 2px dashed #e1e4e8;
-            padding-top: 25px; text-align: center;
-        }
-        .btn-settings {
-            background: #444; width: 100%; padding: 12px;
-            font-size: 14px; border-radius: 10px;
+            padding: 14px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        /* 📣 Fridge Combo 統一デザイン：すっきりポップアップ */
+        button:active {
+            transform: scale(0.97);
+        }
+
+        .btn-clear {
+            background-color: #eeeeee;
+            color: #888;
+        }
+
+        .btn-clean-copy {
+            background-color: var(--accent-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 183, 178, 0.4);
+        }
+
+        /* 下部設定ボタン */
+        .footer-settings {
+            margin-top: auto;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        #openSettings {
+            background: none;
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            text-decoration: underline;
+            font-weight: normal;
+        }
+
+        /* モーダル/ポップアップ (Fridge Combo風) */
         .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.4);
-            z-index: 1000; justify-content: center; align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
         }
-        .modal-overlay.show { display: flex; }
+
         .modal-content {
-            background: white; padding: 25px; border-radius: 20px;
-            width: 85%; max-width: 320px; text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            background: var(--card-bg);
+            width: 85%;
+            max-width: 350px;
+            padding: 25px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
         }
-        .modal-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; }
-        .modal-body { font-size: 0.9rem; color: #666; margin-bottom: 20px; line-height: 1.6; text-align: left; }
-        .btn-modal-close { background: var(--primary); padding: 10px 30px; border-radius: 10px; width: auto; }
-        .footer { text-align: center; font-size: 11px; color: #bbb; margin-top: 30px; }
+
+        .modal-content h2 {
+            font-size: 1.1rem;
+            margin-top: 0;
+        }
+
+        .guide-box {
+            text-align: left;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        .btn-close {
+            background: var(--accent-color);
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* トースト通知 (コピー完了時など) */
+        #toast {
+            position: fixed;
+            bottom: 100px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            display: none;
+            z-index: 2000;
+        }
     </style>
 </head>
 <body>
 
-    <h1>✨ Smart Text Cleaner</h1>
+<div class="container">
+    <h1>
+        <img src="icon.png" alt="" onerror="this.style.display='none'">
+        Smart Text Cleaner
+    </h1>
 
-    <textarea id="inputText" placeholder="Paste messy text here..."></textarea>
+    <textarea id="inputArea" placeholder="ここにテキストをペースト..."></textarea>
 
-    <div class="btn-group">
-        <button class="btn-clean" onclick="cleanText()">1. Clean Text</button>
-        <button class="btn-clear" onclick="clearText()">Clear Input</button>
+    <div class="button-group">
+        <button class="btn-clear" id="clearBtn">Clear</button>
+        <button class="btn-clean-copy" id="cleanCopyBtn">Clean & Copy</button>
     </div>
 
-    <button id="copyBtn" class="btn-copy" onclick="copyText()">2. Copy Result</button>
-
-    <div class="settings-area">
-        <button class="btn-settings" onclick="openModal()">App Settings</button>
+    <div class="footer-settings">
+        <button id="openSettings">App Settings</button>
     </div>
+</div>
 
-    <div id="modalOverlay" class="modal-overlay" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-title">🏠 How to Add to Home</div>
-            <div class="modal-body">
-                <strong>【iPhone / Safari】</strong><br>
-                Tap "Share" button at the bottom, then select "Add to Home Screen".<br><br>
-                <strong>【Android / Chrome】</strong><br>
-                Tap "Menu" (3 dots), then select "Install app" or "Add to Home screen".
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+        <h2>Add to Home Screen</h2>
+        <div class="guide-box" id="guideContent">
             </div>
-            <button class="btn-modal-close" onclick="closeModal()">OK</button>
-        </div>
+        <button class="btn-close" id="closeSettings">Close</button>
     </div>
+</div>
 
-    <div class="footer">Minimalist & Ad-free Tool by afrorakda</div>
+<div id="toast">Copied!</div>
 
-    <script>
-        function cleanText() {
-            const area = document.getElementById('inputText');
-            let t = area.value;
-            if(!t) return;
-            // 徹底洗浄ロジック
-            t = t.split('\n').map(line => line.trim()).join('\n'); // 各行の前後スペース削除
-            t = t.replace(/\n{3,}/g, '\n\n'); // 3つ以上の改行を2つに
-            area.value = t.trim();
-            const btn = document.getElementById('copyBtn');
-            btn.style.display = 'block';
-            btn.innerText = '2. Copy Result';
+<script>
+    const inputArea = document.getElementById('inputArea');
+    const clearBtn = document.getElementById('clearBtn');
+    const cleanCopyBtn = document.getElementById('cleanCopyBtn');
+    const openSettings = document.getElementById('openSettings');
+    const closeSettings = document.getElementById('closeSettings');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const guideContent = document.getElementById('guideContent');
+    const toast = document.getElementById('toast');
+
+    // --- 1. 洗浄 & コピーロジック ---
+    function cleanAndCopy() {
+        let text = inputArea.value;
+        if (!text.trim()) return;
+
+        // 洗浄プロセス
+        let cleaned = text
+            .split('\n')
+            .map(line => line.trim()) // 行頭・行末の空白削除
+            .join('\n')
+            .replace(/\n{3,}/g, '\n\n') // 3つ以上の連続改行を2つに
+            .trim(); // 前後の不要な改行削除
+
+        // クリップボードへ書き込み
+        navigator.clipboard.writeText(cleaned).then(() => {
+            inputArea.value = cleaned; // 画面表示も洗浄後のものに更新
+            showToast('Cleaned & Copied!');
+        }).catch(err => {
+            console.error('Copy failed', err);
+        });
+    }
+
+    // --- 2. クリア機能 (即時実行) ---
+    function clearText() {
+        inputArea.value = '';
+        inputArea.focus();
+    }
+
+    // --- 3. ホーム画面追加ガイド ---
+    function showSettings() {
+        const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isAndroid = /Android/.test(navigator.userAgent);
+
+        if (isiOS) {
+            guideContent.innerHTML = `
+                <strong>For iPhone (Safari):</strong><br>
+                1. Tap the <strong>Share</strong> button ( <img src="https://img.icons8.com/ios/20/000000/share-rounded.png" style="vertical-align:middle"> ).<br>
+                2. Select <strong>'Add to Home Screen'</strong>.<br>
+                3. Tap 'Add' to finish.
+            `;
+        } else if (isAndroid) {
+            guideContent.innerHTML = `
+                <strong>For Android (Chrome):</strong><br>
+                1. Tap the <strong>Menu</strong> ( 3 dots ) at the top right.<br>
+                2. Select <strong>'Install app'</strong> or 'Add to Home screen'.<br>
+                3. Follow the prompt to install.
+            `;
+        } else {
+            guideContent.innerHTML = `
+                Please use your browser's menu to "Add to Home Screen" or "Bookmark" this tool for quick access.
+            `;
         }
+        modalOverlay.style.display = 'flex';
+    }
 
-        function clearText() {
-            const area = document.getElementById('inputText');
-            area.value = '';
-            area.focus();
-            document.getElementById('copyBtn').style.display = 'none';
-        }
+    // --- 4. ユーティリティ ---
+    function showToast(message) {
+        toast.textContent = message;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 2000);
+    }
 
-        async function copyText() {
-            const area = document.getElementById('inputText');
-            try {
-                await navigator.clipboard.writeText(area.value);
-                const btn = document.getElementById('copyBtn');
-                btn.innerText = '✅ Copied!';
-                setTimeout(() => { btn.innerText = '2. Copy Result'; }, 2000);
-            } catch (err) { alert('Failed to copy'); }
-        }
+    // --- イベントリスナー ---
+    cleanCopyBtn.addEventListener('click', cleanAndCopy);
+    clearBtn.addEventListener('click', clearText);
+    openSettings.addEventListener('click', showSettings);
+    closeSettings.addEventListener('click', () => modalOverlay.style.display = 'none');
+    
+    // 背景クリックで閉じる
+    modalOverlay.addEventListener('click', (e) => {
+        if(e.target === modalOverlay) modalOverlay.style.display = 'none';
+    });
+</script>
 
-        function openModal() { document.getElementById('modalOverlay').classList.add('show'); }
-        function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
-    </script>
 </body>
 </html>
