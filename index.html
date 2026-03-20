@@ -10,11 +10,12 @@
     
     <style>
         :root {
-            --bg: #f5f6f7; /* Fridge Combo風の、より明るくクリーンな白 */
-            --text: #333; /* 文字色も少し柔らかく */
+            --bg: #f8f9fa; /* Fridge Combo風の、クリーンな白 */
+            --text: #212529; /* 文字色も少し柔らかく */
             --primary: #4a90e2; /* 青も主張しすぎない、優しいパステル系に */
             --secondary: #a0aab5; /* グレーも柔らかく */
             --success: #6cbf6c; /* 緑も Fridge Combo風の落ち着いた色に */
+            --dark: #343a40; /* ホーム追加ボタン用 */
         }
         
         body {
@@ -29,7 +30,7 @@
         }
         
         h1 { 
-            font-size: 1.4rem; 
+            font-size: 1.5rem; 
             text-align: center; 
             margin-bottom: 25px; 
             color: #555;
@@ -38,10 +39,10 @@
         
         textarea {
             width: 100%;
-            height: 200px;
+            height: 220px;
             padding: 15px;
             border: 1px solid #ddd; /* 線を細く、薄く */
-            border-radius: 15px; /* 角をさらに丸く、優しく */
+            border-radius: 15px; /* 角を丸く、優しく */
             font-size: 16px;
             box-sizing: border-box;
             resize: vertical;
@@ -85,18 +86,18 @@
         /* 🏠 ホーム追加セクション（Fridge Comboと完全統一） */
         .home-section {
             margin-top: 50px;
-            border-top: 2px dashed #e1e4e8;
+            border-top: 2px dashed #dee2e6;
             padding-top: 25px;
             text-align: center;
         }
         .section-title {
-            font-size: 1.0rem;
+            font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 15px;
-            color: #888;
+            color: var(--secondary);
         }
         .btn-add-home {
-            background: #444; /* Fridge Combo風の、少し落ち着いた黒 */
+            background: var(--dark); /* Fridge Combo風の、少し落ち着いた黒 */
             width: 100%;
             padding: 12px;
             font-size: 14px;
@@ -129,13 +130,14 @@
         .custom-alert-overlay.show .custom-alert { transform: scale(1); }
         
         .alert-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; color: #333; }
-        .alert-body { font-size: 0.95rem; color: #666; margin-bottom: 20px; }
+        .alert-body { font-size: 0.95rem; color: #666; margin-bottom: 20px; text-align: left; /* ヒントは見やすく左寄せ */ }
         .btn-alert-ok {
             background: var(--primary);
             padding: 10px 30px;
             font-size: 14px;
             border-radius: 10px;
             box-shadow: none;
+            width: auto;
         }
 
         .footer {
@@ -179,9 +181,9 @@
 
     <script>
         // 📢 すっきりポップアップ（カスタムアラート）を表示する関数
-        function showAlert(title, body) {
+        function showAlert(title, bodyHtml) {
             document.getElementById('alertTitle').innerText = title;
-            document.getElementById('alertBody').innerText = body;
+            document.getElementById('alertBody').innerHTML = bodyHtml; // HTMLを受け取れるように
             document.getElementById('customAlertOverlay').classList.add('show');
         }
         
@@ -208,11 +210,11 @@
         }
 
         function clearText() {
-            // ここもすっきりポップアップに変える
-            showAlert('Clear all text?', 'Are you sure you want to clear?');
-            
-            // 一旦確認はshowAlertで行うので、OKボタンを押した時に消すようにする
-            // 簡易的にするため、今はshowAlertを表示するだけに留める（OKを押したら消すロジックは後で追加）
+            // ここは直感削除に戻す
+            const area = document.getElementById('inputText');
+            area.value = '';
+            document.getElementById('copyBtn').style.display = 'none';
+            area.focus();
         }
 
         async function copyText() {
@@ -231,7 +233,8 @@
         // ホーム画面追加の案内（すっきりポップアップに！）
         document.getElementById('addHomeBtn').addEventListener('click', () => {
             // iPhone/Safariユーザー向けにすっきりポップアップでヒントを出す
-            showAlert('How to Add', '【iPhone】\nTap "Share" -> "Add to Home Screen"\n\n【Android】\nTap "Menu (3 dots)" -> "Add to Home screen"');
+            const body = 'To add to Home Screen:<br><br>【iPhone】<br>Tap "Share" -> "Add to Home Screen"<br><br>【Android】<br>Tap "Menu (3 dots)" -> "Add to Home screen"';
+            showAlert('How to Add', body);
         });
     </script>
 </body>
