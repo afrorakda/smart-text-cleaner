@@ -4,148 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Text Cleaner</title>
-    
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" href="icon.png" type="image/png">
-    
     <style>
         :root {
-            --bg: #f8f9fa; /* Fridge Combo風の、クリーンな白 */
-            --text: #212529; /* 文字色も少し柔らかく */
-            --primary: #4a90e2; /* 青も主張しすぎない、優しいパステル系に */
-            --secondary: #a0aab5; /* グレーも柔らかく */
-            --success: #6cbf6c; /* 緑も Fridge Combo風の落ち着いた色に */
-            --dark: #343a40; /* ホーム追加ボタン用 */
+            --bg: #f8f9fa;
+            --text: #333;
+            --primary: #4a90e2;
+            --secondary: #a0aab5;
+            --success: #6cbf6c;
         }
-        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg);
             color: var(--text);
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            line-height: 1.5;
             padding-bottom: 80px;
         }
-        
-        h1 { 
-            font-size: 1.5rem; 
-            text-align: center; 
-            margin-bottom: 25px; 
-            color: #555;
-            font-weight: 600;
-        }
-        
+        h1 { font-size: 1.4rem; text-align: center; margin-bottom: 20px; color: #555; }
         textarea {
-            width: 100%;
-            height: 220px;
-            padding: 15px;
-            border: 1px solid #ddd; /* 線を細く、薄く */
-            border-radius: 15px; /* 角を丸く、優しく */
-            font-size: 16px;
-            box-sizing: border-box;
-            resize: vertical;
-            margin-bottom: 15px;
-            outline: none;
-            background: white;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.02); /* ほんのり内側に影 */
+            width: 100%; height: 220px; padding: 15px;
+            border: 1px solid #ddd; border-radius: 15px;
+            font-size: 16px; box-sizing: border-box; resize: vertical;
+            margin-bottom: 15px; outline: none; background: white;
         }
-        textarea:focus { border-color: var(--primary); }
-        
-        .btn-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px; /* ボタン同士の間隔を広げて、圧迫感を減らす */
-            margin-bottom: 15px;
-        }
-        
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         button {
-            padding: 18px; /* ボタンを少し大きくして、押しやすく、かつ存在感を柔らかく */
-            border: none;
-            border-radius: 15px; /* 角を丸く */
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            color: white;
-            transition: transform 0.1s, opacity 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* ほんのり影を落とす */
+            padding: 16px; border: none; border-radius: 15px;
+            font-size: 16px; font-weight: 600; cursor: pointer;
+            color: white; transition: opacity 0.2s;
         }
-        button:active { transform: scale(0.98); opacity: 0.9; }
-        
         .btn-clean { background: var(--primary); }
         .btn-clear { background: var(--secondary); }
-        .btn-copy {
-            background: var(--success);
-            width: 100%;
-            display: none; /* 最初は隠す */
-            margin-top: 15px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        .btn-copy { background: var(--success); width: 100%; display: none; margin-top: 15px; }
+
+        /* 🏠 Fridge Combo 統一デザイン：設定ボタンエリア */
+        .settings-area {
+            margin-top: 50px; border-top: 2px dashed #e1e4e8;
+            padding-top: 25px; text-align: center;
+        }
+        .btn-settings {
+            background: #444; width: 100%; padding: 12px;
+            font-size: 14px; border-radius: 10px;
         }
 
-        /* 🏠 ホーム追加セクション（Fridge Comboと完全統一） */
-        .home-section {
-            margin-top: 50px;
-            border-top: 2px dashed #dee2e6;
-            padding-top: 25px;
-            text-align: center;
+        /* 📣 Fridge Combo 統一デザイン：すっきりポップアップ */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.4);
+            z-index: 1000; justify-content: center; align-items: center;
         }
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--secondary);
+        .modal-overlay.show { display: flex; }
+        .modal-content {
+            background: white; padding: 25px; border-radius: 20px;
+            width: 85%; max-width: 320px; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        .btn-add-home {
-            background: var(--dark); /* Fridge Combo風の、少し落ち着いた黒 */
-            width: 100%;
-            padding: 12px;
-            font-size: 14px;
-            border-radius: 10px;
-        }
-
-        /* 📣 すっきりポップアップ（カスタムアラート） */
-        .custom-alert-overlay {
-            display: none; /* 最初は隠す */
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); /* 背景を少し暗く */
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .custom-alert {
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            width: 80%;
-            max-width: 320px;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-            transform: scale(0.9);
-            transition: transform 0.2s;
-        }
-        .custom-alert-overlay.show { display: flex; }
-        .custom-alert-overlay.show .custom-alert { transform: scale(1); }
-        
-        .alert-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; color: #333; }
-        .alert-body { font-size: 0.95rem; color: #666; margin-bottom: 20px; text-align: left; /* ヒントは見やすく左寄せ */ }
-        .btn-alert-ok {
-            background: var(--primary);
-            padding: 10px 30px;
-            font-size: 14px;
-            border-radius: 10px;
-            box-shadow: none;
-            width: auto;
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            color: #adb5bd;
-            margin-top: 40px;
-        }
+        .modal-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; }
+        .modal-body { font-size: 0.9rem; color: #666; margin-bottom: 20px; line-height: 1.6; text-align: left; }
+        .btn-modal-close { background: var(--primary); padding: 10px 30px; border-radius: 10px; width: auto; }
+        .footer { text-align: center; font-size: 11px; color: #bbb; margin-top: 30px; }
     </style>
 </head>
 <body>
@@ -161,81 +81,58 @@
 
     <button id="copyBtn" class="btn-copy" onclick="copyText()">2. Copy Result</button>
 
-    <div class="home-section">
-        <div class="section-title">🏠 App Settings</div>
-        <button id="addHomeBtn" class="btn-add-home">Add to Home Screen</button>
+    <div class="settings-area">
+        <button class="btn-settings" onclick="openModal()">App Settings</button>
     </div>
 
-    <div id="customAlertOverlay" class="custom-alert-overlay" onclick="closeAlert()">
-        <div class="custom-alert" onclick="event.stopPropagation()">
-            <div id="alertTitle" class="alert-title"></div>
-            <div id="alertBody" class="alert-body"></div>
-            <button class="btn-alert-ok" onclick="closeAlert()">OK</button>
+    <div id="modalOverlay" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-title">🏠 How to Add to Home</div>
+            <div class="modal-body">
+                <strong>【iPhone / Safari】</strong><br>
+                Tap "Share" button at the bottom, then select "Add to Home Screen".<br><br>
+                <strong>【Android / Chrome】</strong><br>
+                Tap "Menu" (3 dots), then select "Install app" or "Add to Home screen".
+            </div>
+            <button class="btn-modal-close" onclick="closeModal()">OK</button>
         </div>
     </div>
 
-    <div class="footer">
-        Minimalist & Ad-free Tool.<br>
-        Developed by afrorakda
-    </div>
+    <div class="footer">Minimalist & Ad-free Tool by afrorakda</div>
 
     <script>
-        // 📢 すっきりポップアップ（カスタムアラート）を表示する関数
-        function showAlert(title, bodyHtml) {
-            document.getElementById('alertTitle').innerText = title;
-            document.getElementById('alertBody').innerHTML = bodyHtml; // HTMLを受け取れるように
-            document.getElementById('customAlertOverlay').classList.add('show');
-        }
-        
-        function closeAlert() {
-            document.getElementById('customAlertOverlay').classList.remove('show');
-        }
-    
         function cleanText() {
             const area = document.getElementById('inputText');
-            let text = area.value;
-            if(!text) return;
-
-            // 洗浄ロジック
-            text = text.replace(/^[ \t]+/gm, ''); // 行頭スペース削除
-            text = text.replace(/[ \t]+$/gm, ''); // 行末スペース削除
-            text = text.replace(/\n{3,}/g, '\n\n'); // 3つ以上の改行を2つに
-            
-            area.value = text.trim();
-            
-            // コピーボタンを表示
-            const copyBtn = document.getElementById('copyBtn');
-            copyBtn.style.display = 'block';
-            copyBtn.innerText = '2. Copy Result';
+            let t = area.value;
+            if(!t) return;
+            // 徹底洗浄ロジック
+            t = t.split('\n').map(line => line.trim()).join('\n'); // 各行の前後スペース削除
+            t = t.replace(/\n{3,}/g, '\n\n'); // 3つ以上の改行を2つに
+            area.value = t.trim();
+            const btn = document.getElementById('copyBtn');
+            btn.style.display = 'block';
+            btn.innerText = '2. Copy Result';
         }
 
         function clearText() {
-            // ここは直感削除に戻す
             const area = document.getElementById('inputText');
             area.value = '';
-            document.getElementById('copyBtn').style.display = 'none';
             area.focus();
+            document.getElementById('copyBtn').style.display = 'none';
         }
 
         async function copyText() {
-            const text = document.getElementById('inputText').value;
-            const btn = document.getElementById('copyBtn');
+            const area = document.getElementById('inputText');
             try {
-                await navigator.clipboard.writeText(text);
-                const originalText = btn.innerText;
+                await navigator.clipboard.writeText(area.value);
+                const btn = document.getElementById('copyBtn');
                 btn.innerText = '✅ Copied!';
-                setTimeout(() => { btn.innerText = originalText; }, 2000);
-            } catch (err) {
-                showAlert('Copy failed', 'Please select and copy manually.');
-            }
+                setTimeout(() => { btn.innerText = '2. Copy Result'; }, 2000);
+            } catch (err) { alert('Failed to copy'); }
         }
-        
-        // ホーム画面追加の案内（すっきりポップアップに！）
-        document.getElementById('addHomeBtn').addEventListener('click', () => {
-            // iPhone/Safariユーザー向けにすっきりポップアップでヒントを出す
-            const body = 'To add to Home Screen:<br><br>【iPhone】<br>Tap "Share" -> "Add to Home Screen"<br><br>【Android】<br>Tap "Menu (3 dots)" -> "Add to Home screen"';
-            showAlert('How to Add', body);
-        });
+
+        function openModal() { document.getElementById('modalOverlay').classList.add('show'); }
+        function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
     </script>
 </body>
 </html>
