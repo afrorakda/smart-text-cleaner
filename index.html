@@ -9,24 +9,22 @@
     <link rel="icon" href="icon.png" type="image/png">
     
     <style>
-        :root { --bg: #f8f9fa; --text: #212529; --primary: #007bff; --secondary: #6c757d; --success: #28a745; --highlight: #ffc107; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.5; padding-bottom: 80px; }
+        :root { --bg: #f8f9fa; --text: #212529; --primary: #007bff; --secondary: #6c757d; --success: #28a745; --dark: #343a40; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.5; padding-bottom: 50px; }
         h1 { font-size: 1.5rem; text-align: center; margin-bottom: 20px; }
         textarea { width: 100%; height: 200px; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; font-size: 16px; box-sizing: border-box; resize: vertical; margin-bottom: 15px; }
         .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        button { padding: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; color: white; transition: opacity 0.2s; text-decoration: none; display: inline-block; text-align: center; }
+        button { padding: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; color: white; transition: opacity 0.2s; }
         button:active { opacity: 0.7; }
         .btn-clean { background: var(--primary); }
         .btn-clear { background: var(--secondary); }
         .btn-copy { background: var(--success); width: 100%; display: none; margin-top: 10px; }
         
-        /* 🧊 Fridge Combo & ホーム追加ボタンのスタイル */
-        .fridge-combo { margin-top: 40px; border-top: 2px dashed #ced4da; padding-top: 20px; text-align: center; }
-        .fridge-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; color: var(--secondary); }
-        .btn-fridge { background: var(--highlight); color: #212529; width: 100%; margin-bottom: 10px; }
-        .btn-add-home { background: #343a40; width: 100%; font-size: 14px; padding: 10px; }
+        /* 🏠 ホーム追加ボタンのスタイル */
+        .home-section { margin-top: 40px; border-top: 1px solid #ced4da; padding-top: 20px; text-align: center; }
+        .btn-add-home { background: var(--dark); width: 100%; font-size: 14px; padding: 10px; margin-top: 10px; }
         
-        .footer { text-align: center; font-size: 12px; color: var(--secondary); margin-top: 20px; }
+        .footer { text-align: center; font-size: 12px; color: var(--secondary); margin-top: 30px; }
     </style>
 </head>
 <body>
@@ -42,13 +40,7 @@
 
     <button id="copyBtn" class="btn-copy" onclick="copyText()">2. Copy Result</button>
 
-    <div class="fridge-combo">
-        <div class="fridge-title">🧊 Fridge Combo</div>
-        
-        <a href="https://afrorakda.github.io/fridge-combo/" style="text-decoration: none;">
-            <button class="btn-fridge">Back to Fridge Combo</button>
-        </a>
-        
+    <div class="home-section">
         <button id="addHomeBtn" class="btn-add-home" style="display: none;">+ Add to Home Screen</button>
     </div>
 
@@ -93,12 +85,11 @@
             }
         }
         
-        // 🏠 ホームスクリーン追加のロジック（簡易版）
+        // 🏠 ホーム画面追加ロジック
         let deferredPrompt;
         const addHomeBtn = document.getElementById('addHomeBtn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            // ブラウザが追加可能と判断した場合にボタンを表示
             e.preventDefault();
             deferredPrompt = e;
             addHomeBtn.style.display = 'block';
@@ -108,11 +99,9 @@
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to the install prompt: ${outcome}`);
                 deferredPrompt = null;
                 addHomeBtn.style.display = 'none';
             } else {
-                // beforeinstallprompt がサポートされていない場合
                 alert('To add to Home Screen:\n1. Tap the Share button (Safari) or Menu button (Chrome).\n2. Select "Add to Home Screen".');
             }
         });
