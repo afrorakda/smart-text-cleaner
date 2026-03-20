@@ -9,22 +9,92 @@
     <link rel="icon" href="icon.png" type="image/png">
     
     <style>
-        :root { --bg: #f8f9fa; --text: #212529; --primary: #007bff; --secondary: #6c757d; --success: #28a745; --dark: #343a40; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.5; padding-bottom: 50px; }
-        h1 { font-size: 1.5rem; text-align: center; margin-bottom: 20px; }
-        textarea { width: 100%; height: 200px; padding: 12px; border: 1px solid #ced4da; border-radius: 8px; font-size: 16px; box-sizing: border-box; resize: vertical; margin-bottom: 15px; }
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        button { padding: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; color: white; transition: opacity 0.2s; }
-        button:active { opacity: 0.7; }
+        :root {
+            --bg: #f8f9fa;
+            --text: #212529;
+            --primary: #007bff;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --dark: #343a40;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.5;
+            padding-bottom: 80px;
+        }
+        h1 { font-size: 1.6rem; text-align: center; margin-bottom: 20px; }
+        textarea {
+            width: 100%;
+            height: 220px;
+            padding: 12px;
+            border: 2px solid #ced4da;
+            border-radius: 12px;
+            font-size: 16px;
+            box-sizing: border-box;
+            resize: vertical;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        textarea:focus { border-color: var(--primary); }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        button:active { transform: scale(0.98); opacity: 0.8; }
+        
         .btn-clean { background: var(--primary); }
         .btn-clear { background: var(--secondary); }
-        .btn-copy { background: var(--success); width: 100%; display: none; margin-top: 10px; }
-        
-        /* 🏠 ホーム追加ボタンのスタイル */
-        .home-section { margin-top: 40px; border-top: 1px solid #ced4da; padding-top: 20px; text-align: center; }
-        .btn-add-home { background: var(--dark); width: 100%; font-size: 14px; padding: 10px; margin-top: 10px; }
-        
-        .footer { text-align: center; font-size: 12px; color: var(--secondary); margin-top: 30px; }
+        .btn-copy {
+            background: var(--success);
+            width: 100%;
+            display: none; /* 最初は隠す */
+            margin-top: 10px;
+        }
+
+        /* 🏠 ホーム追加セクション（Fridge Comboと統一） */
+        .home-section {
+            margin-top: 50px;
+            border-top: 2px dashed #dee2e6;
+            padding-top: 25px;
+            text-align: center;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        .btn-add-home {
+            background: var(--dark);
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #adb5bd;
+            margin-top: 40px;
+        }
     </style>
 </head>
 <body>
@@ -41,12 +111,13 @@
     <button id="copyBtn" class="btn-copy" onclick="copyText()">2. Copy Result</button>
 
     <div class="home-section">
-        <button id="addHomeBtn" class="btn-add-home" style="display: none;">+ Add to Home Screen</button>
+        <div class="section-title">🏠 App Settings</div>
+        <button id="addHomeBtn" class="btn-add-home">Add to Home Screen</button>
     </div>
 
     <div class="footer">
-        A minimalist, ad-free tool. ✅No login, ✅No tracking.<br>
-        Built by afrorakda
+        Minimalist & Ad-free Tool.<br>
+        Developed by afrorakda
     </div>
 
     <script>
@@ -55,22 +126,26 @@
             let text = area.value;
             if(!text) return;
 
-            text = text.replace(/^[ \t]+/gm, ''); 
-            text = text.replace(/[ \t]+$/gm, ''); 
-            text = text.replace(/\n{3,}/g, '\n\n'); 
+            // 洗浄ロジック
+            text = text.replace(/^[ \t]+/gm, ''); // 行頭スペース削除
+            text = text.replace(/[ \t]+$/gm, ''); // 行末スペース削除
+            text = text.replace(/\n{3,}/g, '\n\n'); // 3つ以上の改行を2つに
             
             area.value = text.trim();
             
+            // コピーボタンを表示
             const copyBtn = document.getElementById('copyBtn');
             copyBtn.style.display = 'block';
             copyBtn.innerText = '2. Copy Result';
         }
 
         function clearText() {
-            const area = document.getElementById('inputText');
-            area.value = '';
-            document.getElementById('copyBtn').style.display = 'none';
-            area.focus();
+            if(confirm('Clear all text?')) {
+                const area = document.getElementById('inputText');
+                area.value = '';
+                document.getElementById('copyBtn').style.display = 'none';
+                area.focus();
+            }
         }
 
         async function copyText() {
@@ -78,32 +153,17 @@
             const btn = document.getElementById('copyBtn');
             try {
                 await navigator.clipboard.writeText(text);
+                const originalText = btn.innerText;
                 btn.innerText = '✅ Copied!';
-                setTimeout(() => { btn.innerText = '2. Copy Result'; }, 2000);
+                setTimeout(() => { btn.innerText = originalText; }, 2000);
             } catch (err) {
-                alert('Failed to copy');
+                alert('Copy failed. please select and copy manually.');
             }
         }
         
-        // 🏠 ホーム画面追加ロジック
-        let deferredPrompt;
-        const addHomeBtn = document.getElementById('addHomeBtn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            addHomeBtn.style.display = 'block';
-        });
-
-        addHomeBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                deferredPrompt = null;
-                addHomeBtn.style.display = 'none';
-            } else {
-                alert('To add to Home Screen:\n1. Tap the Share button (Safari) or Menu button (Chrome).\n2. Select "Add to Home Screen".');
-            }
+        // ホーム画面追加の案内
+        document.getElementById('addHomeBtn').addEventListener('click', () => {
+            alert('To add to Home Screen:\n\n【iPhone/Safari】\nTap "Share" -> "Add to Home Screen"\n\n【Android/Chrome】\nTap "Menu (3 dots)" -> "Install app" or "Add to Home screen"');
         });
     </script>
 </body>
