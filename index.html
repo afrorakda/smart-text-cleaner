@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Text Cleaner | No-Ads, Minimal Tool</title>
+    <style>
+        :root { --bg: #f4f7f6; --text: #333; --accent: #ffdd00; }
+        body { font-family: -apple-system, sans-serif; line-height: 1.6; background: var(--bg); color: var(--text); max-width: 600px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 1.5rem; text-align: center; }
+        p.subtitle { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px; }
+        textarea { width: 100%; height: 200px; padding: 15px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; margin-bottom: 10px; resize: vertical; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s; }
+        .btn-clean { background: #007bff; color: white; }
+        .btn-clean:hover { background: #0056b3; }
+        .btn-copy { background: #28a745; color: white; }
+        .btn-copy:hover { background: #218838; }
+        
+        /* BMAC Section */
+        .support-box { margin-top: 40px; padding: 20px; border-top: 1px dashed #ccc; text-align: center; }
+        .support-text { font-size: 13px; color: #555; margin-bottom: 15px; }
+        .bmac-btn img { height: 35px; border-radius: 5px; }
+        
+        footer { margin-top: 30px; text-align: center; font-size: 12px; color: #999; }
+    </style>
+</head>
+<body>
+
+    <h1>Smart Text Cleaner</h1>
+    <p class="subtitle">Remove formatting, extra spaces, and hidden junk. Just pure text.</p>
+
+    <textarea id="inputArea" placeholder="Paste your messy text here (from websites, Word, etc.)"></textarea>
+
+    <div class="btn-group">
+        <button class="btn-clean" onclick="cleanText()">1. Clean Text</button>
+        <button class="btn-copy" onclick="copyText()">2. Copy Result</button>
+    </div>
+
+    <div class="support-box">
+        <p class="support-text">Loved this tool? Help me keep it <strong>Ad-Free</strong>.<br>Building tools from Malaysia 🇲🇾</p>
+        <a href="https://www.buymeacoffee.com/afrorakda" target="_blank" class="bmac-btn">
+            <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee">
+        </a>
+    </div>
+
+    <footer>
+        &copy; 2026 afrorakda | No Tracking. No Ads.
+    </footer>
+
+    <script>
+        function cleanText() {
+            const area = document.getElementById('inputArea');
+            let text = area.value;
+            
+            // 1. 装飾情報を消してプレーンテキストにする（貼り付け時に自動で行われますが念押し）
+            // 2. 余計な空白行や文末のスペースを削除
+            text = text.trim()
+                       .replace(/[ \t]+/g, ' ') // 連続するスペースを1つに
+                       .replace(/\n\s*\n/g, '\n\n'); // 3行以上の改行を2行に
+            
+            area.value = text;
+            if(text) alert("Text cleaned! Ready to copy.");
+        }
+
+        function copyText() {
+            const area = document.getElementById('inputArea');
+            area.select();
+            document.execCommand('copy');
+            if(area.value) alert("Copied to clipboard!");
+        }
+    </script>
+</body>
+</html>
