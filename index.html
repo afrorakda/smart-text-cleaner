@@ -3,168 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>Smart Text Cleaner</title>
     
     <link rel="icon" href="image_8.png">
     <link rel="apple-touch-icon" href="image_8.png">
     
     <style>
-        :root {
-            --bg-color: #ffffff;
-            --text-color: #333333;
-            --accent-black: #1a1a1a;
-            --secondary-btn: #f0f0f0;
-            --border-radius: 15px;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fff; display: flex; justify-content: center; padding: 20px; margin: 0; color: #111; -webkit-font-smoothing: antialiased; }
+        .container { width: 100%; max-width: 380px; min-height: 95vh; display: flex; flex-direction: column; }
+        
+        h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 25px 0 5px; display: flex; align-items: center; gap: 10px; }
+        h1 img { width: 32px; height: 32px; border-radius: 8px; }
+        .subtitle { font-size: 0.85rem; color: #666; margin-bottom: 35px; }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+        #inputArea { width: 100%; height: 220px; padding: 18px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; outline: none; transition: 0.2s; -webkit-appearance: none; resize: none; margin-bottom: 20px; line-height: 1.5; }
+        #inputArea:focus { border-color: #111; }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+        .button-group { display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-bottom: 30px; }
+        button { padding: 15px; border: none; border-radius: 15px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: 0.2s; -webkit-appearance: none; }
+        button:active { transform: scale(0.96); opacity: 0.8; }
 
-        .container {
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            flex: 1;
-        }
+        .btn-clear { background-color: #f0f0f0; color: #666; }
+        .btn-clean-copy { background-color: #111; color: white; }
 
-        h1 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin: 20px 0 5px 0;
-            letter-spacing: -1px;
-            /* 2. メインタイトルにもアイコンを表示するならここ */
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        /* Fridge Combo Standard Footer */
+        footer { margin-top: auto; padding: 40px 0 20px; text-align: center; font-size: 13px; color: #666; border-top: 1px solid #f0f0f0; }
+        .kofi-btn { display: inline-block; background: #111; color: #fff; padding: 12px 24px; border-radius: 15px; text-decoration: none; font-weight: bold; margin-bottom: 20px; transition: 0.2s; }
+        .install-btn { background: #f0f0f0; color: #111; border: none; padding: 8px 20px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 500; margin-bottom: 20px; }
+        .footer-line { line-height: 1.8; color: #999; }
 
-        h1 img {
-            width: 36px;
-            height: 36px;
-        }
-
-        .description {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 15px;
-        }
-
-        #inputArea {
-            width: 100%;
-            height: 250px;
-            padding: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: var(--border-radius);
-            font-size: 16px;
-            resize: none;
-            outline: none;
-            line-height: 1.5;
-        }
-
-        .button-group {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 12px;
-        }
-
-        button {
-            padding: 18px;
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        button:active { opacity: 0.7; }
-
-        .btn-clear { background-color: var(--secondary-btn); color: #666; }
-        .btn-clean-copy { background-color: var(--accent-black); color: white; }
-
-        footer {
-            width: 100%;
-            max-width: 500px;
-            margin-top: 40px;
-            padding: 20px 0;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #999;
-            line-height: 1.8;
-        }
-
-        .install-btn {
-            background: #f0f0f0;
-            border-radius: 20px;
-            padding: 8px 18px;
-            font-size: 0.9rem;
-            color: #333;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 25px;
-            border: none;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: #fff;
-            width: 90%;
-            max-width: 380px;
-            padding: 30px;
-            border-radius: 25px;
-            position: relative;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px; right: 20px;
-            font-size: 20px; color: #ccc;
-            background: none; border: none;
-        }
-
-        .guide-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: left;
-            margin-top: 15px;
-        }
-
-        .os-item { margin-bottom: 15px; }
-        .os-item:last-child { margin-bottom: 0; }
-
-        #toast {
-            position: fixed; bottom: 80px;
-            background: rgba(0,0,0,0.8); color: white;
-            padding: 12px 25px; border-radius: 30px;
-            display: none;
-        }
+        /* Unified Install Modal */
+        #install-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+        .modal-content { background: white; padding: 25px; border-radius: 16px; width: 85%; max-width: 300px; position: relative; text-align: center; }
+        .btn-close-modal { position: absolute; top: 15px; right: 15px; background:none; border:none; font-size:20px; color: #999; cursor: pointer; }
+        
+        #toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.8rem; display: none; z-index: 100; }
     </style>
 </head>
 <body>
@@ -174,37 +49,49 @@
         <img src="image_8.png" alt="" onerror="this.style.display='none'">
         Smart Text Cleaner
     </h1>
-    <p class="description">Paste messy text, get it clean and ready to copy.</p>
+    <p class="subtitle">Paste messy text, get it clean and ready to copy.</p>
+    
     <textarea id="inputArea" placeholder="Paste your text here..."></textarea>
+    
     <div class="button-group">
         <button class="btn-clear" id="clearBtn">Clear</button>
         <button class="btn-clean-copy" id="cleanCopyBtn">Clean & Copy</button>
     </div>
+
+    <footer>
+        <a href="https://ko-fi.com/afrorakda" target="_blank" rel="noopener" class="kofi-btn">☕ Support me on Ko-fi</a>
+        <div>
+            <button class="install-btn" onclick="showInstall()">Add to Home Screen</button>
+        </div>
+        <div class="footer-line">
+            <div>No login / No tracking / No ads / Browser only</div>
+            <div>Privacy Policy</div>
+            <div style="margin-top: 10px; font-weight: bold; color: #111;">Smart Text Cleaner © 2026</div>
+        </div>
+    </footer>
 </div>
 
-<footer>
-    <button class="install-btn" id="openInstall">📱 Add to Home Screen</button>
-    <div>No login / No tracking / Browser only<br>No server / No Ads</div>
-    <div style="margin: 10px 0;">Privacy Policy</div>
-    <div>Smart Text Cleaner © 2026</div>
-</footer>
-
-<div class="modal-overlay" id="modalOverlay">
-    <div class="modal-content">
-        <button class="modal-close" id="closeModal">✕</button>
-        <h2 style="margin:0; display:flex; align-items:center; gap:8px;">
-            <img src="image_8.png" alt="" style="width:24px; height:24px;">
-            Install App
+<div id="install-modal" onclick="hideInstall()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="btn-close-modal" onclick="hideInstall()">✕</button>
+        <h2 style="font-size: 1.2rem; margin-top:0; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            📱 Install
         </h2>
-        <p style="color:#666; font-size:0.9rem">Add Smart Text Cleaner to your home screen.</p>
-        <div class="guide-card">
-            <div class="os-item">
-                <strong>🍏 iPhone (Safari):</strong><br>
-                Tap <strong>Share</strong> icon, then <strong>Add to Home Screen</strong>.
+        <p style="font-size: 0.85rem; color: #555; margin-bottom: 15px;">Add to your home screen.</p>
+        <div style="text-align: left; font-size: 0.8rem; background: #f9f9f9; padding: 18px; border-radius: 12px;">
+            <div style="margin-bottom: 12px; display: flex; align-items: start; gap: 8px;">
+                <span>🍏</span>
+                <div>
+                    <strong>iPhone (Safari):</strong><br>
+                    Tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.
+                </div>
             </div>
-            <div class="os-item">
-                <strong>🤖 Android (Chrome):</strong><br>
-                Tap <strong>Menu (⋮)</strong>, then <strong>Add to Home screen</strong>.
+            <div style="display: flex; align-items: start; gap: 8px;">
+                <span>🤖</span>
+                <div>
+                    <strong>Android (Chrome):</strong><br>
+                    Tap <strong>Menu (⋮)</strong>, then <strong>Add to Home screen</strong>.
+                </div>
             </div>
         </div>
     </div>
@@ -214,24 +101,25 @@
 
 <script>
     const area = document.getElementById('inputArea');
-    const modal = document.getElementById('modalOverlay');
 
     document.getElementById('cleanCopyBtn').onclick = () => {
         let val = area.value.trim();
         if (!val) return;
+        // 行ごとのトリムと、3つ以上の改行を2つに制限
         let clean = val.split('\n').map(l => l.trim()).join('\n').replace(/\n{3,}/g, '\n\n');
+        
         navigator.clipboard.writeText(clean).then(() => {
             area.value = clean;
             const t = document.getElementById('toast');
             t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 2000);
+            setTimeout(() => t.style.display = 'none', 1500);
         });
     };
 
     document.getElementById('clearBtn').onclick = () => { area.value = ''; area.focus(); };
-    document.getElementById('openInstall').onclick = () => modal.style.display = 'flex';
-    document.getElementById('closeModal').onclick = () => modal.style.display = 'none';
-    window.onclick = (e) => { if(e.target == modal) modal.style.display = 'none'; };
+
+    function showInstall() { document.getElementById('install-modal').style.display = 'flex'; }
+    function hideInstall() { document.getElementById('install-modal').style.display = 'none'; }
 </script>
 </body>
 </html>
