@@ -1,7 +1,15 @@
-# Smart Text Cleaner
-Clean and format your text instantly. Remove extra spaces and line breaks with one tap.
+# Text Cleaner
+Strip formatting and junk from your text. One click to pure data.
 
-### 🛠 Fridge Combo Standard
-* **Instant Cleaning**: Format your text for copy-pasting in seconds.
-* **Minimalist UI**: White background, black buttons, 15px rounded corners.
-* **Privacy First**: No login, No tracking, No ads.
+## Philosophy
+* **1 Tool, 1 Action.**
+* **No Login / No Ads / No Tracking**
+* **Browser-only Privacy**
+
+## How to Use
+1. Paste your messy text.
+2. Get clean, plain text instantly.
+
+---
+No login / No tracking / No ads / Browser only Privacy Policy  
+**afrorakda © 2026**
