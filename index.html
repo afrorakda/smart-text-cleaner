@@ -24,18 +24,28 @@
         .subtitle { font-size: 0.75rem; color: #666; font-weight: 500; margin: 2px 0 0; }
 
         .input-wrapper { position: relative; width: 100%; flex-grow: 1; display: flex; flex-direction: column; margin-bottom: 15px; }
+        
+        /* 1.入力文字色をOK、2.長押し選択を無効化、3.クリアボタン用に下部余白を追加 */
         #inputArea { 
-            width: 100%; flex-grow: 1; padding: 15px; border: 2px solid var(--accent); border-radius: var(--radius); 
+            width: 100%; flex-grow: 1; padding: 15px; 
+            padding-bottom: 60px; /* クリアボタン用のスペース */
+            border: 2px solid var(--accent); border-radius: var(--radius); 
             box-sizing: border-box; font-size: 16px; font-weight: 600; outline: none; transition: 0.2s; background: var(--input-bg); 
-            line-height: 1.4; resize: none; -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important; 
+            line-height: 1.4; resize: none; -webkit-appearance: none; 
+            color: #4CAF50; /* 文字色をOKグリーンに */
+            -webkit-text-fill-color: #4CAF50; /* iOS用の文字色固定 */
+            opacity: 1 !important;
+            -webkit-user-select: none; /* iOSでの長押し選択無効 */
+            user-select: none; /* 標準の長押し選択無効 */
         }
         #inputArea:focus { border-color: var(--main); }
-        
-        /* プレースホルダーの色を濃く調整 */
-        #inputArea::placeholder { color: #888; -webkit-text-fill-color: #888; }
+        #inputArea::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; }
 
-        /* クリアボタンを大きく、濃く調整 */
-        .clr-btn { position: absolute; right: 10px; top: 10px; background: rgba(180,180,180,0.8); border: none; font-size: 18px; font-weight: bold; color: white; cursor: pointer; display: none; width: 28px; height: 28px; border-radius: 50%; line-height: 28px; text-align: center; padding: 0; }
+        /* 3.クリアボタンを枠内右下に移動、視認性アップ */
+        .clr-btn { 
+            position: absolute; right: 15px; bottom: 15px; /* 右下に配置 */
+            background: rgba(180,180,180,0.9); border: none; font-size: 18px; font-weight: bold; color: white; cursor: pointer; display: none; width: 36px; height: 36px; border-radius: 50%; line-height: 36px; text-align: center; padding: 0; z-index: 10;
+        }
 
         .button-group { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px; }
         .btn-clean-copy { padding: 12px; border: none; border-radius: var(--radius); background-color: var(--main); color: white; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
@@ -103,6 +113,12 @@
 
     function handleInput(el) {
         clearBtn.style.display = el.value ? 'block' : 'none';
+        
+        // 3.文字入力がクリアボタンに干渉しないように、末尾に改行を追加する制御
+        if (el.value.length > 0) {
+            // テキストエリアの高さを調整するなどの複雑なロジックの代わりに、
+            // CSSのpadding-bottomでスペースを確保しているため、JSでの文字数制限は不要。
+        }
     }
 
     function clearText() {
@@ -114,9 +130,13 @@
     document.getElementById('cleanCopyBtn').onclick = () => {
         let val = area.value.trim();
         if (!val) return;
+        // クリーニングロジック
         let clean = val.split('\n').map(l => l.trim()).join('\n').replace(/\n{3,}/g, '\n\n');
+        
         navigator.clipboard.writeText(clean).then(() => {
+            // クリーニング後のテキストを入力欄に戻す（文字色はOKグリーンのまま）
             area.value = clean;
+            handleInput(area); // クリアボタンの表示状態を更新
             const t = document.getElementById('toast');
             t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 1500);
         });
