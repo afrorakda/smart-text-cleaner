@@ -26,9 +26,17 @@
             -webkit-font-smoothing: antialiased; 
         }
         
-        .container { width: 100%; max-width: 380px; min-height: 95vh; display: flex; flex-direction: column; }
+        .container { width: 100%; max-width: 380px; min-height: 95vh; display: flex; flex-direction: column; position: relative; }
         
-        header { margin: 25px 0 35px; }
+        /* Hub Button - Top Left (Fixed position) */
+        .hub-link {
+            text-decoration: none; font-size: 0.8rem; font-weight: 800; color: var(--main);
+            background: var(--accent); padding: 8px 15px; border-radius: var(--radius);
+            align-self: flex-start; margin-bottom: 25px; transition: 0.2s;
+        }
+        .hub-link:active { transform: scale(0.95); }
+
+        header { margin-bottom: 35px; }
         h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 0 0 5px; display: flex; align-items: center; gap: 10px; }
         h1 img { width: 32px; height: 32px; border-radius: 8px; }
         .subtitle { font-size: 0.85rem; color: #666; font-weight: 500; }
@@ -59,13 +67,11 @@
         }
         .btn-clean-copy:active { transform: scale(0.96); opacity: 0.9; }
 
-        /* Footer & Buttons */
+        /* Footer - Standard Fixed Style */
         footer { margin-top: auto; padding: 30px 0 20px; text-align: center; border-top: 1px solid #f5f5f5; font-size: 12px; color: #666; font-weight: 600; }
         .footer-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .row { display: flex; gap: 10px; }
-        .kofi-btn { flex: 1; background: var(--main); color: #fff; padding: 12px; border-radius: var(--radius); text-decoration: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; min-height: 44px; }
-        .home-btn { flex: 1; background: var(--accent); color: var(--main); border: none; padding: 12px; border-radius: var(--radius); font-weight: 800; font-size: 13px; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; min-height: 44px; }
-        .install-trigger { background: var(--accent); color: var(--main); border: none; padding: 10px; border-radius: var(--radius); font-weight: 800; font-size: 11px; cursor: pointer; width: 100%; min-height: 36px; }
+        .kofi-btn { background: var(--main); color: #fff; padding: 12px; border-radius: var(--radius); text-decoration: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+        .install-trigger { background: var(--accent); color: var(--main); border: none; padding: 10px; border-radius: var(--radius); font-weight: 800; font-size: 11px; cursor: pointer; width: 100%; }
         
         .footer-info { line-height: 1.6; }
         .footer-info a { color: inherit; text-decoration: underline; }
@@ -81,6 +87,8 @@
 <body>
 
 <div class="container">
+    <a href="https://afrorakda.github.io/" class="hub-link">🏠 Hub</a>
+
     <header>
         <h1>
             <img src="image_2.png" alt="">
@@ -98,19 +106,7 @@
         <button class="btn-clean-copy" id="cleanCopyBtn">Clean & Copy</button>
     </div>
 
-    <footer id="dynamic-footer">
-        <div class="footer-btns">
-            <div class="row">
-                <div id="kofi-placeholder" class="kofi-btn" style="opacity: 0.5;">Loading...</div>
-                <a href="https://afrorakda.github.io/" class="home-btn">🏠 Hub</a>
-            </div>
-            <button class="install-trigger" style="opacity: 0.5;">Add to Home Screen</button>
-        </div>
-        <div class="footer-info">
-            No login / No tracking / No ads / Browser only<br>
-            Privacy Policy / afrorakda © 2026
-        </div>
-    </footer>
+    <footer id="dynamic-footer"></footer>
 </div>
 
 <div id="toast">Copied!</div>
@@ -152,19 +148,14 @@
     }
 
     async function loadFooter() {
-        const footerElem = document.getElementById('dynamic-footer');
         try {
             const response = await fetch('footer.json');
-            if (!response.ok) throw new Error("JSON not found");
             const data = await response.json();
             
-            // データを取得できたら上書き
-            footerElem.innerHTML = `
+            // footer.jsonのデータをそのまま流し込む（改変なし）
+            document.getElementById('dynamic-footer').innerHTML = `
                 <div class="footer-btns">
-                    <div class="row">
-                        <a href="${data.kofi.url}" target="_blank" class="kofi-btn">${data.kofi.text}</a>
-                        <a href="https://afrorakda.github.io/" class="home-btn">🏠 Hub</a>
-                    </div>
+                    <a href="${data.kofi.url}" target="_blank" class="kofi-btn">${data.kofi.text}</a>
                     <button class="install-trigger" onclick="showModal()">${data.install.text}</button>
                 </div>
                 <div class="footer-info">
@@ -188,19 +179,7 @@
             `;
             document.body.appendChild(modalDiv);
         } catch (err) {
-            // 読み込めなかった場合は、デフォルトの内容でHubボタンだけは生かす
-            footerElem.innerHTML = `
-                <div class="footer-btns">
-                    <div class="row">
-                        <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn">☕️buy me a coffee</a>
-                        <a href="https://afrorakda.github.io/" class="home-btn">🏠 Hub</a>
-                    </div>
-                </div>
-                <div class="footer-info">
-                    No login / No tracking / No ads / Browser only<br>
-                    Privacy Policy / afrorakda © 2026
-                </div>
-            `;
+            console.error("Footer load failed", err);
         }
     }
 
