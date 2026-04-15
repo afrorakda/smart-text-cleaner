@@ -11,76 +11,35 @@
     <link rel="apple-touch-icon" href="image_2.png">
     
     <style>
-        :root {
-            --main: #333;
-            --bg: #fff;
-            --accent: #eee;
-            --input-bg: #fafafa;
-            --radius: 15px;
-        }
-
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background-color: var(--bg); display: flex; justify-content: center; 
-            padding: 20px; margin: 0; color: var(--main); 
-            -webkit-font-smoothing: antialiased; 
-        }
-        
+        :root { --main: #333; --bg: #fff; --accent: #eee; --input-bg: #fafafa; --radius: 15px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); display: flex; justify-content: center; padding: 20px; margin: 0; color: var(--main); -webkit-font-smoothing: antialiased; }
         .container { width: 100%; max-width: 380px; min-height: 95vh; display: flex; flex-direction: column; position: relative; }
         
-        /* Hub Button - Top Left */
-        .hub-link {
-            text-decoration: none; font-size: 0.8rem; font-weight: 800; color: var(--main);
-            background: var(--accent); padding: 8px 15px; border-radius: var(--radius);
-            align-self: flex-start; margin-bottom: 25px; transition: 0.2s;
-        }
-        .hub-link:active { transform: scale(0.95); }
-
+        .hub-link { text-decoration: none; font-size: 0.8rem; font-weight: 800; color: var(--main); background: var(--accent); padding: 8px 15px; border-radius: var(--radius); align-self: flex-start; margin-bottom: 25px; transition: 0.2s; }
+        
         header { margin-bottom: 35px; }
         h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 0 0 5px; display: flex; align-items: center; gap: 10px; }
         h1 img { width: 32px; height: 32px; border-radius: 8px; }
         .subtitle { font-size: 0.85rem; color: #666; font-weight: 500; }
 
         .input-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
-        #inputArea { 
-            width: 100%; height: 220px; padding: 18px; 
-            border: 2px solid var(--accent); border-radius: var(--radius); 
-            box-sizing: border-box; font-size: 16px; font-weight: 600;
-            outline: none; transition: 0.2s; background: var(--input-bg);
-            line-height: 1.5; resize: none;
-            -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important;
-        }
+        #inputArea { width: 100%; height: 220px; padding: 18px; border: 2px solid var(--accent); border-radius: var(--radius); box-sizing: border-box; font-size: 16px; font-weight: 600; outline: none; transition: 0.2s; background: var(--input-bg); line-height: 1.5; resize: none; -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important; }
         #inputArea:focus { border-color: var(--main); }
-        #inputArea::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; opacity: 1; }
-
-        .clr-btn { 
-            position: absolute; right: 15px; top: 15px; 
-            background: none; border: none; font-size: 20px; color: #ccc; 
-            cursor: pointer; display: none; padding: 5px;
-        }
 
         .button-group { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 30px; }
-        .btn-clean-copy { 
-            padding: 18px; border: none; border-radius: var(--radius); 
-            background-color: var(--main); color: white;
-            font-size: 1rem; font-weight: 800; cursor: pointer; transition: 0.2s; 
-        }
-        .btn-clean-copy:active { transform: scale(0.96); opacity: 0.9; }
+        .btn-clean-copy { padding: 18px; border: none; border-radius: var(--radius); background-color: var(--main); color: white; font-size: 1rem; font-weight: 800; cursor: pointer; }
 
-        /* Footer Sanctuary */
+        /* Footer Fixed Layout */
         footer { margin-top: auto; padding: 30px 0 20px; text-align: center; border-top: 1px solid #f5f5f5; font-size: 12px; color: #666; font-weight: 600; }
         .footer-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .kofi-btn { background: var(--main); color: #fff; padding: 12px; border-radius: var(--radius); text-decoration: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; }
-        .install-trigger { background: var(--accent); color: var(--main); border: none; padding: 10px; border-radius: var(--radius); font-weight: 800; font-size: 11px; cursor: pointer; width: 100%; }
-        
+        .install-trigger { background: var(--accent); color: var(--main); border: none; padding: 12px; border-radius: var(--radius); font-weight: 800; font-size: 13px; cursor: pointer; width: 100%; }
         .footer-info { line-height: 1.6; }
         .footer-info a { color: inherit; text-decoration: underline; }
 
-        /* Modal Sanctuary */
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: #fff; width: 85%; max-width: 340px; padding: 30px; border-radius: var(--radius); text-align: left; position: relative; }
+        .modal-content { background: #fff; width: 85%; max-width: 340px; padding: 30px; border-radius: var(--radius); position: relative; text-align: left; }
         .close-x { position: absolute; top: 15px; right: 20px; font-size: 24px; color: #888; cursor: pointer; }
-        
         #toast { position: fixed; bottom: 160px; left: 50%; transform: translateX(-50%); background: var(--main); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.85rem; font-weight: 700; display: none; z-index: 100; }
     </style>
 </head>
@@ -88,18 +47,13 @@
 
 <div class="container">
     <a href="https://afrorakda.github.io/" class="hub-link">🏠 Hub</a>
-
     <header>
-        <h1>
-            <img src="image_2.png" alt="">
-            Smart Text Cleaner
-        </h1>
+        <h1><img src="image_2.png" alt="">Smart Text Cleaner</h1>
         <p class="subtitle">Cleaner & Word counter for SNS marketers.</p>
     </header>
     
     <div class="input-wrapper">
-        <textarea id="inputArea" placeholder="Paste your messy text here..." oninput="handleInput(this)"></textarea>
-        <button id="clearBtn" class="clr-btn" onclick="clearText()">&times;</button>
+        <textarea id="inputArea" placeholder="Paste your messy text here..."></textarea>
     </div>
     
     <div class="button-group">
@@ -108,92 +62,67 @@
 
     <footer id="dynamic-footer">
         <div class="footer-btns">
-            <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn">☕️buy me a coffee</a>
-            <button class="install-trigger" onclick="showModal()">Add to Home Screen</button>
+            <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn" id="kofi-link">☕️buy me a coffee</a>
+            <button class="install-trigger" onclick="showModal()" id="install-text">Add to Home Screen</button>
         </div>
         <div class="footer-info">
             No login / No tracking / No ads / Browser only<br>
-            Privacy Policy / afrorakda © 2026
+            <a href="https://afrorakda.github.io/Privacy-Policy/" id="privacy-link">Privacy Policy</a><br>
+            <span id="copyright">afrorakda © 2026</span>
         </div>
     </footer>
+</div>
+
+<div id="modal" onclick="hideModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="close-x" onclick="hideModal()">×</span>
+        <h3 id="modal-title" style="margin-top:0;">Install App</h3>
+        <p id="modal-msg" style="font-size:14px; font-weight:600;">Add to your home screen for easy access.</p>
+        <p id="modal-ios" style="font-size:13px; color:#666;">iOS: Tap Share then 'Add to Home Screen'.</p>
+        <p id="modal-android" style="font-size:13px; color:#666;">Android: Tap Menu then 'Add to Home Screen'.</p>
+    </div>
 </div>
 
 <div id="toast">Copied!</div>
 
 <script>
-    const area = document.getElementById('inputArea');
-    const clearBtn = document.getElementById('clearBtn');
-
-    function handleInput(el) {
-        clearBtn.style.display = el.value ? 'block' : 'none';
-    }
-
-    function clearText() {
-        area.value = '';
-        clearBtn.style.display = 'none';
-        area.focus();
-    }
-
+    // ツール本体ロジック
     document.getElementById('cleanCopyBtn').onclick = () => {
+        const area = document.getElementById('inputArea');
         let val = area.value.trim();
         if (!val) return;
-        let clean = val.split('\n').map(line => line.trim()).join('\n').replace(/\n{3,}/g, '\n\n');
-        
+        let clean = val.split('\n').map(l => l.trim()).join('\n').replace(/\n{3,}/g, '\n\n');
         navigator.clipboard.writeText(clean).then(() => {
             area.value = clean;
             const t = document.getElementById('toast');
-            t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 1500);
+            t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 1500);
         });
     };
 
-    function showModal() { 
-        const modal = document.getElementById('modal');
-        if(modal) modal.style.display = 'flex'; 
-    }
-    function hideModal() { 
-        const modal = document.getElementById('modal');
-        if(modal) modal.style.display = 'none'; 
-    }
+    // 聖域ロジック（改変禁止）
+    function showModal() { document.getElementById('modal').style.display = 'flex'; }
+    function hideModal() { document.getElementById('modal').style.display = 'none'; }
 
     async function loadFooter() {
         try {
             const response = await fetch('footer.json');
-            if (!response.ok) return; // 失敗時はHTMLの直書きが残る
+            if (!response.ok) return;
             const data = await response.json();
-            
-            document.getElementById('dynamic-footer').innerHTML = `
-                <div class="footer-btns">
-                    <a href="${data.kofi.url}" target="_blank" class="kofi-btn">${data.kofi.text}</a>
-                    <button class="install-trigger" onclick="showModal()">${data.install.text}</button>
-                </div>
-                <div class="footer-info">
-                    No login / No tracking / No ads / Browser only<br>
-                    <a href="${data.privacy.url}">${data.privacy.text}</a><br>
-                    Smart Text Cleaner © 2026
-                </div>
-            `;
-
-            if (!document.getElementById('modal')) {
-                const modalDiv = document.createElement('div');
-                modalDiv.id = 'modal';
-                modalDiv.onclick = hideModal;
-                modalDiv.innerHTML = `
-                    <div class="modal-content" onclick="event.stopPropagation()">
-                        <span class="close-x" onclick="hideModal()">×</span>
-                        <h3 style="margin-top:0;">${data.install.title}</h3>
-                        <p style="font-size:14px; font-weight:600;">${data.install.msg}</p>
-                        <p style="font-size:13px; color:#666;">${data.install.ios}</p>
-                        <p style="font-size:13px; color:#666;">${data.install.android}</p>
-                    </div>
-                `;
-                document.body.appendChild(modalDiv);
+            // JSONが読み込めたら、既存のHTML要素を最新にアップデート
+            if(data.kofi) {
+                document.getElementById('kofi-link').href = data.kofi.url;
+                document.getElementById('kofi-link').textContent = data.kofi.text;
             }
-        } catch (err) {
-            console.error("Footer update skipped", err);
-        }
+            if(data.install) {
+                document.getElementById('install-text').textContent = data.install.text;
+                document.getElementById('modal-title').textContent = data.install.title;
+                document.getElementById('modal-msg').textContent = data.install.msg;
+                document.getElementById('modal-ios').textContent = data.install.ios;
+                document.getElementById('modal-android').textContent = data.install.android;
+            }
+            if(data.privacy) document.getElementById('privacy-link').href = data.privacy.url;
+        } catch (e) { console.error("Footer update skipped."); }
     }
-
     window.addEventListener('DOMContentLoaded', loadFooter);
 </script>
 </body>
