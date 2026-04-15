@@ -12,36 +12,48 @@
     
     <style>
         :root { --main: #333; --bg: #fff; --accent: #eee; --input-bg: #fafafa; --radius: 15px; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); display: flex; justify-content: center; padding: 20px; margin: 0; color: var(--main); -webkit-font-smoothing: antialiased; }
-        .container { width: 100%; max-width: 380px; min-height: 95vh; display: flex; flex-direction: column; position: relative; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); display: flex; justify-content: center; padding: 15px; margin: 0; color: var(--main); -webkit-font-smoothing: antialiased; }
+        .container { width: 100%; max-width: 380px; min-height: 98vh; display: flex; flex-direction: column; position: relative; }
         
-        .hub-link { text-decoration: none; font-size: 0.8rem; font-weight: 800; color: var(--main); background: var(--accent); padding: 8px 15px; border-radius: var(--radius); align-self: flex-start; margin-bottom: 25px; transition: 0.2s; }
+        .hub-link { text-decoration: none; font-size: 0.8rem; font-weight: 800; color: var(--main); background: var(--accent); padding: 8px 15px; border-radius: var(--radius); align-self: flex-start; margin-bottom: 10px; transition: 0.2s; }
         .hub-link:active { transform: scale(0.95); }
 
-        header { margin-bottom: 35px; }
-        h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 0 0 5px; display: flex; align-items: center; gap: 10px; }
-        h1 img { width: 32px; height: 32px; border-radius: 8px; }
-        .subtitle { font-size: 0.85rem; color: #666; font-weight: 500; }
+        /* 余白を最小化 */
+        header { margin-bottom: 10px; }
+        h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.8px; margin: 0; display: flex; align-items: center; gap: 8px; }
+        h1 img { width: 28px; height: 28px; border-radius: 6px; }
+        .subtitle { font-size: 0.75rem; color: #666; font-weight: 500; margin: 2px 0 0; }
 
-        .input-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
-        #inputArea { width: 100%; height: 220px; padding: 18px; border: 2px solid var(--accent); border-radius: var(--radius); box-sizing: border-box; font-size: 16px; font-weight: 600; outline: none; transition: 0.2s; background: var(--input-bg); line-height: 1.5; resize: none; -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important; }
+        /* 入力窓を最大化 */
+        .input-wrapper { position: relative; width: 100%; flex-grow: 1; display: flex; flex-direction: column; margin-bottom: 15px; }
+        #inputArea { 
+            width: 100%; flex-grow: 1; padding: 15px; border: 2px solid var(--accent); border-radius: var(--radius); 
+            box-sizing: border-box; font-size: 16px; font-weight: 600; outline: none; transition: 0.2s; background: var(--input-bg); 
+            line-height: 1.4; resize: none; -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important; 
+        }
         #inputArea:focus { border-color: var(--main); }
+        
+        /* プレースホルダーの色をさらに薄く調整 */
+        #inputArea::placeholder { color: #ddd; -webkit-text-fill-color: #ddd; }
 
-        .button-group { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 30px; }
-        .btn-clean-copy { padding: 18px; border: none; border-radius: var(--radius); background-color: var(--main); color: white; font-size: 1rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .clr-btn { position: absolute; right: 12px; top: 12px; background: none; border: none; font-size: 20px; color: #ccc; cursor: pointer; display: none; padding: 5px; }
+
+        /* コピーボタンをコンパクトに */
+        .button-group { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px; }
+        .btn-clean-copy { padding: 12px; border: none; border-radius: var(--radius); background-color: var(--main); color: white; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
         .btn-clean-copy:active { transform: scale(0.96); opacity: 0.9; }
 
-        footer { margin-top: auto; padding: 30px 0 20px; text-align: center; border-top: 1px solid #f5f5f5; font-size: 12px; color: #666; font-weight: 600; }
-        .footer-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .kofi-btn { background: var(--main); color: #fff; padding: 12px; border-radius: var(--radius); text-decoration: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; }
-        .install-trigger { background: var(--accent); color: var(--main); border: none; padding: 12px; border-radius: var(--radius); font-weight: 800; font-size: 13px; cursor: pointer; width: 100%; }
-        .footer-info { line-height: 1.6; }
+        footer { margin-top: auto; padding: 15px 0; text-align: center; border-top: 1px solid #f5f5f5; font-size: 11px; color: #666; font-weight: 600; }
+        .footer-btns { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .kofi-btn { background: var(--main); color: #fff; padding: 10px; border-radius: var(--radius); text-decoration: none; font-weight: bold; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+        .install-trigger { background: var(--accent); color: var(--main); border: none; padding: 10px; border-radius: var(--radius); font-weight: 800; font-size: 12px; cursor: pointer; width: 100%; }
+        .footer-info { line-height: 1.5; }
         .footer-info a { color: inherit; text-decoration: underline; }
 
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: #fff; width: 85%; max-width: 340px; padding: 30px; border-radius: var(--radius); position: relative; text-align: left; }
-        .close-x { position: absolute; top: 15px; right: 20px; font-size: 24px; color: #888; cursor: pointer; }
-        #toast { position: fixed; bottom: 160px; left: 50%; transform: translateX(-50%); background: var(--main); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.85rem; font-weight: 700; display: none; z-index: 100; }
+        .modal-content { background: #fff; width: 85%; max-width: 340px; padding: 25px; border-radius: var(--radius); position: relative; text-align: left; }
+        .close-x { position: absolute; top: 12px; right: 18px; font-size: 22px; color: #888; cursor: pointer; }
+        #toast { position: fixed; bottom: 140px; left: 50%; transform: translateX(-50%); background: var(--main); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; display: none; z-index: 100; }
     </style>
 </head>
 <body>
@@ -54,7 +66,8 @@
     </header>
     
     <div class="input-wrapper">
-        <textarea id="inputArea" placeholder="Paste your messy text here..."></textarea>
+        <textarea id="inputArea" placeholder="Paste your messy text here..." oninput="handleInput(this)"></textarea>
+        <button id="clearBtn" class="clr-btn" onclick="clearText()">&times;</button>
     </div>
     
     <div class="button-group">
@@ -87,8 +100,20 @@
 <div id="toast">Copied!</div>
 
 <script>
+    const area = document.getElementById('inputArea');
+    const clearBtn = document.getElementById('clearBtn');
+
+    function handleInput(el) {
+        clearBtn.style.display = el.value ? 'block' : 'none';
+    }
+
+    function clearText() {
+        area.value = '';
+        clearBtn.style.display = 'none';
+        area.focus();
+    }
+
     document.getElementById('cleanCopyBtn').onclick = () => {
-        const area = document.getElementById('inputArea');
         let val = area.value.trim();
         if (!val) return;
         let clean = val.split('\n').map(l => l.trim()).join('\n').replace(/\n{3,}/g, '\n\n');
