@@ -28,7 +28,7 @@
         
         .container { width: 100%; max-width: 380px; min-height: 95vh; display: flex; flex-direction: column; position: relative; }
         
-        /* Hub Button - Top Left (Independent) */
+        /* Hub Button - Top Left */
         .hub-link {
             text-decoration: none; font-size: 0.8rem; font-weight: 800; color: var(--main);
             background: var(--accent); padding: 8px 15px; border-radius: var(--radius);
@@ -106,7 +106,16 @@
         <button class="btn-clean-copy" id="cleanCopyBtn">Clean & Copy</button>
     </div>
 
-    <footer id="dynamic-footer"></footer>
+    <footer id="dynamic-footer">
+        <div class="footer-btns">
+            <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn">☕️buy me a coffee</a>
+            <button class="install-trigger" onclick="showModal()">Add to Home Screen</button>
+        </div>
+        <div class="footer-info">
+            No login / No tracking / No ads / Browser only<br>
+            Privacy Policy / afrorakda © 2026
+        </div>
+    </footer>
 </div>
 
 <div id="toast">Copied!</div>
@@ -138,7 +147,6 @@
         });
     };
 
-    /* Sanctuary Functions: loadFooter, showModal, hideModal */
     function showModal() { 
         const modal = document.getElementById('modal');
         if(modal) modal.style.display = 'flex'; 
@@ -151,6 +159,7 @@
     async function loadFooter() {
         try {
             const response = await fetch('footer.json');
+            if (!response.ok) return; // 失敗時はHTMLの直書きが残る
             const data = await response.json();
             
             document.getElementById('dynamic-footer').innerHTML = `
@@ -165,21 +174,23 @@
                 </div>
             `;
 
-            const modalDiv = document.createElement('div');
-            modalDiv.id = 'modal';
-            modalDiv.onclick = hideModal;
-            modalDiv.innerHTML = `
-                <div class="modal-content" onclick="event.stopPropagation()">
-                    <span class="close-x" onclick="hideModal()">×</span>
-                    <h3 style="margin-top:0;">${data.install.title}</h3>
-                    <p style="font-size:14px; font-weight:600;">${data.install.msg}</p>
-                    <p style="font-size:13px; color:#666;">${data.install.ios}</p>
-                    <p style="font-size:13px; color:#666;">${data.install.android}</p>
-                </div>
-            `;
-            document.body.appendChild(modalDiv);
+            if (!document.getElementById('modal')) {
+                const modalDiv = document.createElement('div');
+                modalDiv.id = 'modal';
+                modalDiv.onclick = hideModal;
+                modalDiv.innerHTML = `
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <span class="close-x" onclick="hideModal()">×</span>
+                        <h3 style="margin-top:0;">${data.install.title}</h3>
+                        <p style="font-size:14px; font-weight:600;">${data.install.msg}</p>
+                        <p style="font-size:13px; color:#666;">${data.install.ios}</p>
+                        <p style="font-size:13px; color:#666;">${data.install.android}</p>
+                    </div>
+                `;
+                document.body.appendChild(modalDiv);
+            }
         } catch (err) {
-            console.error("Footer load failed", err);
+            console.error("Footer update skipped", err);
         }
     }
 
