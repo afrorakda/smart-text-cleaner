@@ -11,102 +11,119 @@
     <link rel="apple-touch-icon" href="image_2.png">
     
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fff; display: flex; justify-content: center; padding: 20px; margin: 0; color: #111; -webkit-font-smoothing: antialiased; }
+        :root {
+            --main: #333;
+            --bg: #fff;
+            --accent: #eee;
+            --input-bg: #fafafa;
+            --radius: 15px;
+        }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--bg); display: flex; justify-content: center; 
+            padding: 20px; margin: 0; color: var(--main); 
+            -webkit-font-smoothing: antialiased; 
+        }
+        
         .container { width: 100%; max-width: 380px; min-height: 95vh; display: flex; flex-direction: column; }
         
-        h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 25px 0 5px; display: flex; align-items: center; gap: 10px; }
+        header { margin: 25px 0 35px; }
+        h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 0 0 5px; display: flex; align-items: center; gap: 10px; }
         h1 img { width: 32px; height: 32px; border-radius: 8px; }
-        .subtitle { font-size: 0.85rem; color: #666; margin-bottom: 35px; }
+        .subtitle { font-size: 0.85rem; color: #666; font-weight: 500; }
 
-        #inputArea { width: 100%; height: 220px; padding: 18px; border: 1px solid #ddd; border-radius: 15px; box-sizing: border-box; font-size: 16px; outline: none; transition: 0.2s; -webkit-appearance: none; resize: none; margin-bottom: 20px; line-height: 1.5; }
-        #inputArea:focus { border-color: #111; }
+        .input-wrapper { position: relative; width: 100%; margin-bottom: 20px; }
+        #inputArea { 
+            width: 100%; height: 220px; padding: 18px; 
+            border: 2px solid var(--accent); border-radius: var(--radius); 
+            box-sizing: border-box; font-size: 16px; font-weight: 600;
+            outline: none; transition: 0.2s; background: var(--input-bg);
+            line-height: 1.5; resize: none;
+            -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important;
+        }
+        #inputArea:focus { border-color: var(--main); }
+        #inputArea::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; opacity: 1; }
 
-        .button-group { display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-bottom: 30px; }
-        button { padding: 15px; border: none; border-radius: 15px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: 0.2s; -webkit-appearance: none; }
-        button:active { transform: scale(0.96); opacity: 0.8; }
+        .clr-btn { 
+            position: absolute; right: 15px; top: 15px; 
+            background: none; border: none; font-size: 20px; color: #ccc; 
+            cursor: pointer; display: none; padding: 5px;
+        }
 
-        .btn-clear { background-color: #f0f0f0; color: #666; }
-        .btn-clean-copy { background-color: #111; color: white; }
+        .button-group { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 30px; }
+        .btn-clean-copy { 
+            padding: 18px; border: none; border-radius: var(--radius); 
+            background-color: var(--main); color: white;
+            font-size: 1rem; font-weight: 800; cursor: pointer; transition: 0.2s; 
+        }
+        .btn-clean-copy:active { transform: scale(0.96); opacity: 0.9; }
 
-        /* Fridge Combo Standard Footer */
-        footer { margin-top: auto; padding: 40px 0 20px; text-align: center; font-size: 13px; color: #666; border-top: 1px solid #f0f0f0; }
-        .kofi-btn { display: inline-block; background: #111; color: #fff; padding: 12px 24px; border-radius: 15px; text-decoration: none; font-weight: bold; margin-bottom: 20px; transition: 0.2s; }
-        .install-btn { background: #f0f0f0; color: #111; border: none; padding: 8px 20px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 500; margin-bottom: 20px; }
-        .footer-line { line-height: 1.8; color: #999; }
+        /* Dynamic Footer Styling */
+        footer { margin-top: auto; padding: 30px 0 20px; text-align: center; border-top: 1px solid #f5f5f5; font-size: 12px; color: #666; font-weight: 600; }
+        .footer-btns { display: flex; gap: 10px; margin-bottom: 20px; }
+        .kofi-btn { flex: 6; background: var(--main); color: #fff; padding: 12px; border-radius: var(--radius); text-decoration: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+        .home-btn { flex: 4; background: var(--accent); color: var(--main); border: none; padding: 12px; border-radius: var(--radius); font-weight: 800; font-size: 12px; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+        .footer-info { line-height: 1.6; }
+        .footer-info a { color: inherit; text-decoration: underline; }
 
-        /* Unified Install Modal */
-        #install-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
-        .modal-content { background: white; padding: 25px; border-radius: 16px; width: 85%; max-width: 300px; position: relative; text-align: center; }
-        .btn-close-modal { position: absolute; top: 15px; right: 15px; background:none; border:none; font-size:20px; color: #999; cursor: pointer; }
+        /* Modal Styles */
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 100; }
+        .modal-content { background: #fff; width: 85%; max-width: 340px; padding: 30px; border-radius: var(--radius); text-align: left; position: relative; }
+        .close-x { position: absolute; top: 15px; right: 20px; font-size: 24px; color: #888; cursor: pointer; }
         
-        #toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.8rem; display: none; z-index: 100; }
+        #toast { position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%); background: var(--main); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.85rem; font-weight: 700; display: none; z-index: 100; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>
-        <img src="image_8.png" alt="" onerror="this.style.display='none'">
-        Smart Text Cleaner
-    </h1>
-    <p class="subtitle">Paste messy text, get it clean and ready to copy.</p>
+    <header>
+        <h1>
+            <img src="image_2.png" alt="">
+            Smart Text Cleaner
+        </h1>
+        <p class="subtitle">Cleaner & Word counter for SNS marketers.</p>
+    </header>
     
-    <textarea id="inputArea" placeholder="Paste your text here..."></textarea>
+    <div class="input-wrapper">
+        <textarea id="inputArea" placeholder="Paste your messy text here..." oninput="handleInput(this)"></textarea>
+        <button id="clearBtn" class="clr-btn" onclick="clearText()">&times;</button>
+    </div>
     
     <div class="button-group">
-        <button class="btn-clear" id="clearBtn">Clear</button>
         <button class="btn-clean-copy" id="cleanCopyBtn">Clean & Copy</button>
     </div>
 
-    <footer>
-        <a href="https://ko-fi.com/afrorakda" target="_blank" rel="noopener" class="kofi-btn">☕ Support me on Ko-fi</a>
-        <div>
-            <button class="install-btn" onclick="showInstall()">Add to Home Screen</button>
-        </div>
-        <div class="footer-line">
-            <div>No login / No tracking / No ads / Browser only</div>
-            <div>Privacy Policy</div>
-            <div style="margin-top: 10px; font-weight: bold; color: #111;">Smart Text Cleaner © 2026</div>
-        </div>
-    </footer>
-</div>
-
-<div id="install-modal" onclick="hideInstall()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <button class="btn-close-modal" onclick="hideInstall()">✕</button>
-        <h2 style="font-size: 1.2rem; margin-top:0; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            📱 Install
-        </h2>
-        <p style="font-size: 0.85rem; color: #555; margin-bottom: 15px;">Add to your home screen.</p>
-        <div style="text-align: left; font-size: 0.8rem; background: #f9f9f9; padding: 18px; border-radius: 12px;">
-            <div style="margin-bottom: 12px; display: flex; align-items: start; gap: 8px;">
-                <span>🍏</span>
-                <div>
-                    <strong>iPhone (Safari):</strong><br>
-                    Tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.
-                </div>
-            </div>
-            <div style="display: flex; align-items: start; gap: 8px;">
-                <span>🤖</span>
-                <div>
-                    <strong>Android (Chrome):</strong><br>
-                    Tap <strong>Menu (⋮)</strong>, then <strong>Add to Home screen</strong>.
-                </div>
-            </div>
-        </div>
-    </div>
+    <footer id="dynamic-footer"></footer>
 </div>
 
 <div id="toast">Copied!</div>
 
 <script>
     const area = document.getElementById('inputArea');
+    const clearBtn = document.getElementById('clearBtn');
+
+    function handleInput(el) {
+        clearBtn.style.display = el.value ? 'block' : 'none';
+    }
+
+    function clearText() {
+        area.value = '';
+        clearBtn.style.display = 'none';
+        area.focus();
+    }
 
     document.getElementById('cleanCopyBtn').onclick = () => {
         let val = area.value.trim();
         if (!val) return;
-        // 行ごとのトリムと、3つ以上の改行を2つに制限
-        let clean = val.split('\n').map(l => l.trim()).join('\n').replace(/\n{3,}/g, '\n\n');
+        
+        // 1. 各行をトリム
+        // 2. 3つ以上の連続改行を2つにする
+        let clean = val.split('\n')
+                       .map(line => line.trim())
+                       .join('\n')
+                       .replace(/\n{3,}/g, '\n\n');
         
         navigator.clipboard.writeText(clean).then(() => {
             area.value = clean;
@@ -116,10 +133,64 @@
         });
     };
 
-    document.getElementById('clearBtn').onclick = () => { area.value = ''; area.focus(); };
+    function showModal() { 
+        const modal = document.getElementById('modal');
+        if(modal) modal.style.display = 'flex'; 
+    }
+    function hideModal() { 
+        const modal = document.getElementById('modal');
+        if(modal) modal.style.display = 'none'; 
+    }
 
-    function showInstall() { document.getElementById('install-modal').style.display = 'flex'; }
-    function hideInstall() { document.getElementById('install-modal').style.display = 'none'; }
+    async function loadFooter() {
+        try {
+            const response = await fetch('footer.json');
+            const data = await response.json();
+            
+            // Hubへのリンク（Home戻る）を含むフッター
+            document.getElementById('dynamic-footer').innerHTML = `
+                <div class="footer-btns">
+                    <a href="${data.kofi.url}" target="_blank" class="kofi-btn">${data.kofi.text}</a>
+                    <a href="https://afrorakda.github.io/Hub/" class="home-btn">🏠 Home</a>
+                </div>
+                <div class="footer-info">
+                    No login / No tracking / No ads / Browser only<br>
+                    <a href="${data.privacy.url}">${data.privacy.text}</a><br>
+                    Smart Text Cleaner © 2026
+                </div>
+            `;
+
+            // モーダルの作成
+            const modalDiv = document.createElement('div');
+            modalDiv.id = 'modal';
+            modalDiv.onclick = hideModal;
+            modalDiv.innerHTML = `
+                <div class="modal-content" onclick="event.stopPropagation()">
+                    <span class="close-x" onclick="hideModal()">×</span>
+                    <h3 style="margin-top:0;">${data.install.title}</h3>
+                    <p style="font-size:14px; font-weight:600;">${data.install.msg}</p>
+                    <p style="font-size:13px; color:#666;">${data.install.ios}</p>
+                    <p style="font-size:13px; color:#666;">${data.install.android}</p>
+                </div>
+            `;
+            document.body.appendChild(modalDiv);
+        } catch (err) {
+            // fallback
+            document.getElementById('dynamic-footer').innerHTML = `
+                <div class="footer-btns">
+                    <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn">☕️buy me a coffee</a>
+                    <a href="https://afrorakda.github.io/Hub/" class="home-btn">🏠 Home</a>
+                </div>
+                <div class="footer-info">
+                    No login / No tracking / No ads / Browser only<br>
+                    Privacy Policy<br>
+                    afrorakda © 2026
+                </div>
+            `;
+        }
+    }
+
+    loadFooter();
 </script>
 </body>
 </html>
